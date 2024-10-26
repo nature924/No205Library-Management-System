@@ -1,0 +1,104 @@
+package com.boot.controller;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.boot.entity.Cate;
+import com.boot.service.CateService;
+import com.boot.util.PageHelper;
+import com.boot.util.VeDate;
+//定义为控制器
+@Controller
+// 设置路径
+@RequestMapping(value = "/cate" , produces = "text/plain;charset=utf-8")
+public class CateController extends BaseController {
+	// @Autowired的作用是自动注入依赖的ServiceBean
+	@Autowired
+	private CateService cateService;
+
+	// 准备添加数据
+	@RequestMapping("createCate.action")
+	public String createCate() {
+		return "admin/addcate";
+	}
+	// 添加数据
+	@RequestMapping("addCate.action")
+	public String addCate(Cate cate) {
+		cate.setAddtime(VeDate.getStringDateShort());
+		this.cateService.insertCate(cate);
+		return "redirect:/cate/createCate.action";
+	}
+
+	// 通过主键删除数据
+	@RequestMapping("deleteCate.action")
+	public String deleteCate(String id) {
+		this.cateService.deleteCate(id);
+		return "redirect:/cate/getAllCate.action";
+	}
+
+	// 批量删除数据
+	@RequestMapping("deleteCateByIds.action")
+	public String deleteCateByIds() {
+		String[] ids = this.getRequest().getParameterValues("cateid");
+		if (ids != null) {
+			for (String cateid : ids) {
+				this.cateService.deleteCate(cateid);
+			}
+		}
+		return "redirect:/cate/getAllCate.action";
+	}
+
+	// 更新数据
+	@RequestMapping("updateCate.action")
+	public String updateCate(Cate cate) {
+		this.cateService.updateCate(cate);
+		return "redirect:/cate/getAllCate.action";
+	}
+
+	// 显示全部数据
+	@RequestMapping("getAllCate.action")
+	public String getAllCate(String number) {
+		List<Cate> cateList = this.cateService.getAllCate();
+		PageHelper.getUserPage(cateList, "cate", "getAllCate", 10, number, this.getRequest());
+		return "admin/listcate";
+	}
+
+	// 按条件查询数据 (模糊查询)
+	@RequestMapping("queryCateByCond.action")
+	public String queryCateByCond(String cond, String name, String number) {
+		Cate cate = new Cate();
+		if(cond != null){
+			if ("catename".equals(cond)) {
+				cate.setCatename(name);
+			}
+			if ("addtime".equals(cond)) {
+				cate.setAddtime(name);
+			}
+			if ("memo".equals(cond)) {
+				cate.setMemo(name);
+			}
+		}
+
+		List<String> nameList = new ArrayList<String>();
+		List<String> valueList = new ArrayList<String>();
+		nameList.add(cond);
+		valueList.add(name);
+		PageHelper.getPage(this.cateService.getCateByLike(cate), "cate", nameList, valueList, 10, number, this.getRequest(), "query");
+		name = null;
+		cond = null;
+		return "admin/querycate";
+	}
+
+	// 按主键查询数据
+	@RequestMapping("getCateById.action")
+	public String getCateById(String id) {
+		Cate cate = this.cateService.getCateById(id);
+		this.getRequest().setAttribute("cate", cate);
+		return "admin/editcate";
+	}
+
+
+}

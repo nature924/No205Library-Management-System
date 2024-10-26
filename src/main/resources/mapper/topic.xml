@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置Mabatis映射文件 -->
+<mapper namespace="com.boot.dao.TopicDAO">
+	<resultMap type="topic" id="topicMap">
+		<id property="topicid" column="topicid" />
+		<result property="ordersid" column="ordersid" />
+		<result property="usersid" column="usersid" />
+		<result property="booksid" column="booksid" />
+		<result property="num" column="num" />
+		<result property="contents" column="contents" />
+		<result property="addtime" column="addtime" />
+		<result property="ordercode" column="ordercode" />
+		<result property="username" column="username" />
+		<result property="booksname" column="booksname" />
+	</resultMap>
+	<!-- 插入语句 DAO通过id调用此配置 -->
+	<insert id="insertTopic" parameterType="topic">
+		insert into topic(topicid , ordersid , usersid , booksid , num , contents , addtime ) values(#{topicid} ,
+		#{ordersid} , #{usersid} , #{booksid} , #{num} ,
+		#{contents} , #{addtime} )
+	</insert>
+	<!-- 更新语句 DAO通过id调用此配置 -->
+	<update id="updateTopic" parameterType="topic">
+		update topic set ordersid=#{ordersid} , usersid=#{usersid} , booksid=#{booksid} , num=#{num} ,
+		contents=#{contents} , addtime=#{addtime} where topicid=#{topicid}
+	</update>
+	<!-- 按主键删除 DAO通过id调用此配置 -->
+	<delete id="deleteTopic" parameterType="String">
+		delete from topic where topicid = #{topicid}
+	</delete>
+	<!-- 查询全部信息 DAO通过id调用此配置 -->
+	<select id="getAllTopic" resultMap="topicMap">
+		select a.* , b.ordercode , c.username , d.booksname from topic a , orders b , users c , books d where a.ordersid =
+		b.ordersid and a.usersid = c.usersid and
+		a.booksid = d.booksid order by topicid desc
+	</select>
+
+	<!-- 按主键查询 DAO通过id调用此配置 -->
+	<select id="getTopicById" parameterType="String" resultMap="topicMap">
+		select a.* , b.ordercode , c.username , d.booksname from topic a , orders b , users c , books
+		d where a.ordersid = b.ordersid and a.usersid = c.usersid and
+		a.booksid = d.booksid and topicid=#{topicid} order by topicid desc
+	</select>
+	<!-- 按条件精确查询 DAO通过id调用此配置 -->
+	<select id="getTopicByCond" parameterType="topic" resultMap="topicMap">
+		select a.* , b.ordercode , c.username , d.booksname from topic a , orders b , users c , books d where a.ordersid = b.ordersid and a.usersid = c.usersid and
+		a.booksid = d.booksid
+		<if test="ordersid != null and '' != ordersid">
+			and a.ordersid = #{ordersid}
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and a.usersid = #{usersid}
+		</if>
+		<if test="booksid != null and '' != booksid">
+			and a.booksid = #{booksid}
+		</if>
+		<if test="num != null and '' != num">
+			and a.num = #{num}
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents = #{contents}
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}
+		</if>
+	</select>
+	<!-- 按条件模糊查询 DAO通过id调用此配置 -->
+	<select id="getTopicByLike" parameterType="topic" resultMap="topicMap">
+		select a.* , b.ordercode , c.username , d.booksname from topic a , orders b , users c , books d where a.ordersid = b.ordersid and a.usersid = c.usersid and
+		a.booksid = d.booksid
+		<if test="ordersid != null and '' != ordersid">
+			and b.ordercode like CONCAT('%', CONCAT(#{ordersid}, '%'))
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and c.username like CONCAT('%', CONCAT(#{usersid}, '%'))
+		</if>
+		<if test="booksid != null and '' != booksid">
+			and d.booksname like CONCAT('%', CONCAT(#{booksid}, '%'))
+		</if>
+		<if test="num != null and '' != num">
+			and a.num like CONCAT('%', CONCAT(#{num}, '%'))
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents like CONCAT('%', CONCAT(#{contents}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

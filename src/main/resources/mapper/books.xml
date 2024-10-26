@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置Mabatis映射文件 -->
+<mapper namespace="com.boot.dao.BooksDAO">
+	<resultMap type="books" id="booksMap">
+		<id property="booksid" column="booksid" />
+		<result property="isbn" column="isbn" />
+		<result property="booksname" column="booksname" />
+		<result property="cateid" column="cateid" />
+		<result property="image" column="image" />
+		<result property="author" column="author" />
+		<result property="publisher" column="publisher" />
+		<result property="recommend" column="recommend" />
+		<result property="addtime" column="addtime" />
+		<result property="hits" column="hits" />
+		<result property="storage" column="storage" />
+		<result property="num" column="num" />
+		<result property="contents" column="contents" />
+		<result property="catename" column="catename" />
+	</resultMap>
+	<!-- 插入语句 DAO通过id调用此配置 -->
+	<insert id="insertBooks" parameterType="books">
+		insert into books(booksid , isbn , booksname , cateid , image , author , publisher , recommend , addtime , hits ,
+		storage , num , contents ) values(#{booksid} ,
+		#{isbn} , #{booksname} , #{cateid} , #{image} , #{author} , #{publisher} , #{recommend} , #{addtime} , #{hits} ,
+		#{storage} , #{num} , #{contents} )
+	</insert>
+	<!-- 更新语句 DAO通过id调用此配置 -->
+	<update id="updateBooks" parameterType="books">
+		update books set isbn=#{isbn} , booksname=#{booksname} , cateid=#{cateid} , image=#{image} , author=#{author} ,
+		publisher=#{publisher} , recommend=#{recommend} ,
+		addtime=#{addtime} , hits=#{hits} , storage=#{storage} , num=#{num} , contents=#{contents} where
+		booksid=#{booksid}
+	</update>
+	<!-- 按主键删除 DAO通过id调用此配置 -->
+	<delete id="deleteBooks" parameterType="String">
+		delete from books where booksid = #{booksid}
+	</delete>
+	<!-- 查询全部信息 DAO通过id调用此配置 -->
+	<select id="getAllBooks" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid order by booksid desc
+	</select>
+	<select id="getBooksByNews" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid
+		order by booksid desc limit 5
+	</select>
+
+	<select id="getBooksByHot" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid
+		order by rand() limit 5
+	</select>
+
+	<select id="getBooksByCate" parameterType="String" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid
+		and
+		a.cateid=#{cateid} order by booksid desc limit 5
+	</select>
+	<!-- 按主键查询 DAO通过id调用此配置 -->
+	<select id="getBooksById" parameterType="String" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid and
+		booksid=#{booksid} order by booksid desc
+	</select>
+	<!-- 按条件精确查询 DAO通过id调用此配置 -->
+	<select id="getBooksByCond" parameterType="books" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid
+		<if test="isbn != null and '' != isbn">
+			and a.isbn = #{isbn}
+		</if>
+		<if test="booksname != null and '' != booksname">
+			and a.booksname = #{booksname}
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and a.cateid = #{cateid}
+		</if>
+		<if test="image != null and '' != image">
+			and a.image = #{image}
+		</if>
+		<if test="author != null and '' != author">
+			and a.author = #{author}
+		</if>
+		<if test="publisher != null and '' != publisher">
+			and a.publisher = #{publisher}
+		</if>
+		<if test="recommend != null and '' != recommend">
+			and a.recommend = #{recommend}
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}
+		</if>
+		<if test="hits != null and '' != hits">
+			and a.hits = #{hits}
+		</if>
+		<if test="storage != null and '' != storage">
+			and a.storage = #{storage}
+		</if>
+		<if test="num != null and '' != num">
+			and a.num = #{num}
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents = #{contents}
+		</if>
+	</select>
+	<!-- 按条件模糊查询 DAO通过id调用此配置 -->
+	<select id="getBooksByLike" parameterType="books" resultMap="booksMap">
+		select a.* , b.catename from books a , cate b where a.cateid = b.cateid
+		<if test="isbn != null and '' != isbn">
+			and a.isbn like CONCAT('%', CONCAT(#{isbn}, '%'))
+		</if>
+		<if test="booksname != null and '' != booksname">
+			and a.booksname like CONCAT('%', CONCAT(#{booksname}, '%'))
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and b.catename like CONCAT('%', CONCAT(#{cateid}, '%'))
+		</if>
+		<if test="image != null and '' != image">
+			and a.image like CONCAT('%', CONCAT(#{image}, '%'))
+		</if>
+		<if test="author != null and '' != author">
+			and a.author like CONCAT('%', CONCAT(#{author}, '%'))
+		</if>
+		<if test="publisher != null and '' != publisher">
+			and a.publisher like CONCAT('%', CONCAT(#{publisher}, '%'))
+		</if>
+		<if test="recommend != null and '' != recommend">
+			and a.recommend like CONCAT('%', CONCAT(#{recommend}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="hits != null and '' != hits">
+			and a.hits like CONCAT('%', CONCAT(#{hits}, '%'))
+		</if>
+		<if test="storage != null and '' != storage">
+			and a.storage like CONCAT('%', CONCAT(#{storage}, '%'))
+		</if>
+		<if test="num != null and '' != num">
+			and a.num like CONCAT('%', CONCAT(#{num}, '%'))
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents like CONCAT('%', CONCAT(#{contents}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

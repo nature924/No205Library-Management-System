@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置Mabatis映射文件 -->
+<mapper namespace="com.boot.dao.ApplysDAO">
+	<resultMap type="applys" id="applysMap">
+		<id property="applysid" column="applysid" />
+		<result property="ordersid" column="ordersid" />
+		<result property="usersid" column="usersid" />
+		<result property="booksid" column="booksid" />
+		<result property="reason" column="reason" />
+		<result property="addtime" column="addtime" />
+		<result property="status" column="status" />
+		<result property="memo" column="memo" />
+		<result property="ordercode" column="ordercode" />
+		<result property="username" column="username" />
+		<result property="booksname" column="booksname" />
+	</resultMap>
+	<!-- 插入语句 DAO通过id调用此配置 -->
+	<insert id="insertApplys" parameterType="applys">
+		insert into applys(applysid , ordersid , usersid , booksid , reason , addtime , status , memo ) values(#{applysid} , #{ordersid} , #{usersid} , #{booksid} ,
+		#{reason} , #{addtime} , #{status} , #{memo} )
+	</insert>
+	<!-- 更新语句 DAO通过id调用此配置 -->
+	<update id="updateApplys" parameterType="applys">
+		update applys set ordersid=#{ordersid} , usersid=#{usersid} , booksid=#{booksid} , reason=#{reason} , addtime=#{addtime} , status=#{status} , memo=#{memo} where
+		applysid=#{applysid}
+	</update>
+	<!-- 按主键删除 DAO通过id调用此配置 -->
+	<delete id="deleteApplys" parameterType="String">
+		delete from applys where applysid = #{applysid}
+	</delete>
+	<!-- 查询全部信息 DAO通过id调用此配置 -->
+	<select id="getAllApplys" resultMap="applysMap">
+		select a.* , b.ordercode , c.username , d.booksname from applys a , orders b , users c , books d where 1=1 and a.ordersid = b.ordersid and a.usersid = c.usersid and
+		a.booksid = d.booksid order by applysid desc
+	</select>
+
+	<!-- 按主键查询 DAO通过id调用此配置 -->
+	<select id="getApplysById" parameterType="String" resultMap="applysMap">
+		select a.* , b.ordercode , c.username , d.booksname from applys a , orders b , users c , books d where 1=1 and a.ordersid = b.ordersid and a.usersid = c.usersid and
+		a.booksid = d.booksid and applysid=#{applysid} order by applysid desc
+	</select>
+	<!-- 按条件精确查询 DAO通过id调用此配置 -->
+	<select id="getApplysByCond" parameterType="applys" resultMap="applysMap">
+		select a.* , b.ordercode , c.username , d.booksname from applys a , orders b , users c , books d where 1=1 and a.ordersid = b.ordersid and a.usersid =
+		c.usersid and a.booksid = d.booksid
+		<if test="ordersid != null and '' != ordersid">
+			and a.ordersid = #{ordersid}
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and a.usersid = #{usersid}
+		</if>
+		<if test="booksid != null and '' != booksid">
+			and a.booksid = #{booksid}
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason = #{reason}
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}
+		</if>
+		<if test="status != null and '' != status">
+			and a.status = #{status}
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}
+		</if>
+	</select>
+	<!-- 按条件模糊查询 DAO通过id调用此配置 -->
+	<select id="getApplysByLike" parameterType="applys" resultMap="applysMap">
+		select a.* , b.ordercode , c.username , d.booksname from applys a , orders b , users c , books d where 1=1 and a.ordersid = b.ordersid and a.usersid =
+		c.usersid and a.booksid = d.booksid
+		<if test="ordersid != null and '' != ordersid">
+			and b.ordercode like CONCAT('%', CONCAT(#{ordersid}, '%'))
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and c.username like CONCAT('%', CONCAT(#{usersid}, '%'))
+		</if>
+		<if test="booksid != null and '' != booksid">
+			and d.booksname like CONCAT('%', CONCAT(#{booksid}, '%'))
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason like CONCAT('%', CONCAT(#{reason}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="status != null and '' != status">
+			and a.status like CONCAT('%', CONCAT(#{status}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
